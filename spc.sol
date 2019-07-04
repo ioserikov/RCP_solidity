@@ -1,27 +1,45 @@
+
+
 pragma solidity ^0.5.10;
 
 contract rpc_game{
+   
+    // types
+
+    enum resultenum {
+        winfirst,  // 0
+        winsecond, // 1 
+        nowin     // 2
+    }
+
+
+    enum turnenum {
+        scissors, // 0
+        paper,    //1
+        rock     //2 
+    }
+
+
+    // global vars - PUBLIC
+
     address payable creator;
     address payable public  player1;
     address payable public  player2;
     uint256 public stake; // in weis
     bool public turn1done;
     bool public turn2done;
-
-    enum resultenum {
-        winfirst,  // 0
-        winsecond, // 1 
-        nowin }    // 2
-
-    enum turnenum {
-        scissors, // 0
-        paper,    //1
-        rock}     //2 
+    resultenum public Result;
     
+
+    //global vars - private
+
+      
     turnenum private  turn1value; 
     turnenum private  turn2value; 
     
     
+
+
     constructor () public {
             creator = msg.sender;
 
@@ -35,26 +53,34 @@ contract rpc_game{
     function Play()  public returns (resultenum win){
                     
            require(turn2done == true);
-            resultenum result = resultenum.nowin;
+           resultenum result = resultenum.nowin;
             
             
-            result = countresult(turn1value,turn2value);
-            emit Played(player1, player2, result);
-            return result;
+           Result = countresult(turn1value,turn2value);
+           emit Played(player1, player2, result);
+           
+           return Result;
             
    }
    
    
-   function Clear() public {
+   function Clear() public { 
        
-       creator.transfer(stake / 10);
+       creator.transfer(address(this).balance /  10);
        
+       if (Result == resultenum.nowin){
+           
+         player1.transfer(address(this).balance / 2); 
+         player2.transfer(address(this).balance / 2); 
+         
+           
+       }
        // prize to winner
        address payable winner;
-       resultenum result;
+       
        
        winner = player1;
-       if (result == resultenum.winsecond) {
+       if (Result == resultenum.winsecond) {
             winner = player2;
        }
        
@@ -69,7 +95,8 @@ contract rpc_game{
    
         result = resultenum.nowin; 
         if (turn1 == turn2)
-            { return result; }
+            { return result;
+        }
         
         if ((turn1 == turnenum.scissors && turn2 ==turnenum.paper) || (turn1 == turnenum.paper && turn2 == turnenum.rock) || (turn1 == turnenum.rock && turn2 == turnenum.scissors )) {
             result = resultenum.winfirst;
@@ -77,18 +104,14 @@ contract rpc_game{
         }
         else
         {
-       result = resultenum.winsecond;
-       return result;
+            result = resultenum.winsecond;
+            return result;
         }
     
     }  
     
     
     
-    /*function setStake(uint256 value) public { // size of stae can change owner
-        require (msg.sender == creator);
-       stake = value;
-    }*/
         
         
     
