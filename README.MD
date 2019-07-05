@@ -1,5 +1,6 @@
-## contract dor playin game Rock, Scissors, Paper
+# contract for playin game Rock, Scissors, Paper
 
+## only fot target of solidity study.
 
 - Number of states - 5
 - Number of stata-changes - 7
@@ -10,6 +11,10 @@ Two adresses make stake from set {scissors, paper, rock}
 - scissors wins paper
 - paper wins rock
 
-creator can change size of  a  stake.
-creator can be a part if a game
+First player also decides amount of stake
+
+Creator always recieves reward from round.
+
+Task of hidden stake of first player is not implemented yet.
+
 
